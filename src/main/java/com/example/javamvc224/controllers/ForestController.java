@@ -2,6 +2,7 @@ package com.example.javamvc224.controllers;
 
 import com.example.javamvc224.models.ForecastModel;
 import com.example.javamvc224.models.ForecastTimestamp;
+import com.example.javamvc224.models.IndexModel;
 import com.example.javamvc224.models.Root;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -28,9 +29,13 @@ public class ForestController {
     public ModelAndView index(@RequestParam(required = false)String city) throws IOException {
         ModelAndView modelAndView = new ModelAndView("index");
 
-        var forecasts = getForecasts(city);
+        var indexModel = new IndexModel();
+        indexModel.city = city;
 
-        modelAndView.addObject("forecasts", forecasts);
+        var forecasts = getForecasts(city);
+        indexModel.forecasts = forecasts;
+
+        modelAndView.addObject("indexModel", indexModel);
 
         return modelAndView;
 
