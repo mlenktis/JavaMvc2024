@@ -62,7 +62,7 @@ public class ForestController {
     private static ArrayList<ForecastModel> getForecasts(String city) throws IOException {
         var forecasts = new ArrayList<ForecastModel>();
 
-        if(city!=null){
+        if(city!=null && !city.isEmpty()){
             var metoForecastsJson = getMeteoForecastJson(city);
             Root meteObj = getObjectFromJson(metoForecastsJson);
             for(var item : meteObj.forecastTimestamps){

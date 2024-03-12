@@ -11,7 +11,7 @@
 <div>
     <form method="get">
         <select name="city" onchange="this.form.submit()">
-            <option>
+            <option value="" th:selected="${indexModel.city==''}">
                 Pasirinkite miesta
             </option>
             <option value="vilnius" th:selected="${indexModel.city=='vilnius'}" >
@@ -23,7 +23,6 @@
             <option value="klaipeda" th:selected="${indexModel.city=='klaipeda'}">
                 Klaipėda
             </option>
-
         </select>
     </form>
     <table border="1px">
