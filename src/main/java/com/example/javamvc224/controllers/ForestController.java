@@ -1,10 +1,16 @@
 package com.example.javamvc224.controllers;
 
 import com.example.javamvc224.models.ForecastModel;
+import com.example.javamvc224.models.ForecastTimestamp;
+import com.example.javamvc224.models.Root;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -16,18 +22,22 @@ import java.util.Scanner;
 @Controller
 public class ForestController {
 
+
     @GetMapping("/")
     public ModelAndView index() throws IOException {
         ModelAndView modelAndView = new ModelAndView("index");
 
-        var forecasts = getForecastModels();
-
-        modelAndView.addObject("forecasts", forecasts);
         var text = getMeteoForecastJson();
         System.out.println(text);
 
+        var forecasts = getForecastModels(text);
+        modelAndView.addObject("forecasts", forecasts);
+
         return modelAndView;
+
     }
+
+
     public static String getMeteoForecastJson() throws IOException {
         URL url = new URL("https://api.meteo.lt/v1/places/vilnius/forecasts/long-term");
 
@@ -43,18 +53,24 @@ public class ForestController {
         scanner.close();
         return text;
 
-
     }
 
-    private static ArrayList<ForecastModel> getForecastModels() {
+    private static ArrayList<ForecastModel> getForecastModels(String json) throws JsonProcessingException {
         var forecasts = new ArrayList<ForecastModel>();
-        var row1 = new ForecastModel("2024-03-12 11:00", 1.0);
-        var row2 = new ForecastModel("2024-03-12 12:00", 2.0);
-        var row3 = new ForecastModel("2024-03-12 13:00", 3.0);
 
-        forecasts.add(row1);
-        forecasts.add(row2);
-        forecasts.add(row3);
+        Root meteoObj = getObjectFromJson(json);
+
+        for (var item : meteoObj.forecastTimestamps) {
+            var row = new ForecastModel(item.forecastTimeUtc, item.airTemperature);
+            forecasts.add(row);
+        }
+
         return forecasts;
     }
+
+    private static Root getObjectFromJson(String json) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        return om.readValue(json, Root.class);
+    }
+
 }
