@@ -18,30 +18,13 @@
             </td>
         </tr>
         </thead>
-        <tr>
-            <td>
-                1
-            </td>
-            <td>
-                11
-            </td>
+        <tbody>
+        <tr th:each="forecast : ${forecasts}">
+            <td th:text="${forecast.dateTime}"></td>
+            <td th:text="${forecast.temperature}"></td>
         </tr>
-        <tr>
-            <td>
-                2
-            </td>
-            <td>
-                22
-            </td>
-        </tr>
-        <tr>
-            <td>
-                3
-            </td>
-            <td>
-                33
-            </td>
-        </tr>
+        </tbody>
+
     </table>
 </div>
 </body>
